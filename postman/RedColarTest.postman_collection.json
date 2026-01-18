@@ -1,0 +1,224 @@
+{
+  "info": {
+    "name": "RedColarTest API",
+    "description": "Postman collection for RedColarTest service.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "apiKey",
+      "value": "dev-operator-key"
+    }
+  ],
+  "item": [
+    {
+      "name": "Location",
+      "item": [
+        {
+          "name": "Check location",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"u-123\",\n  \"latitude\": 55.7522,\n  \"longitude\": 37.6156\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/location/check",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "location",
+                "check"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Incidents",
+      "item": [
+        {
+          "name": "Create incident",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Test\",\n  \"latitude\": 55.75,\n  \"longitude\": 37.61,\n  \"danger_radius_m\": 100\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/incidents",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "incidents"
+              ]
+            }
+          }
+        },
+        {
+          "name": "List incidents",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/incidents?page=1&page_size=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "incidents"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "20"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update incident",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated\",\n  \"latitude\": 55.75,\n  \"longitude\": 37.61,\n  \"danger_radius_m\": 150,\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/incidents/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "incidents",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete incident",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/incidents/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "incidents",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Incidents stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/incidents/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "incidents",
+                "stats"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "System",
+      "item": [
+        {
+          "name": "Health check",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/system/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "system",
+                "health"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+services:
+  app:
+    build: .
+    container_name: redcolar_app
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://root:password@postgres:5432/my_db?sslmode=disable
+      OPERATOR_API_KEY: dev-operator-key
+      REDIS_ADDR: redis:6379
+      REDIS_PASSWORD: ""
+      REDIS_DB: 0
+      WEBHOOK_URL: http://host.docker.internal:9090/webhook
+      STATS_TIME_WINDOW_MINUTES: 60
+      CACHE_INCIDENTS_TTL_SECONDS: 60
+      WEBHOOK_MAX_RETRIES: 5
+      WEBHOOK_RETRY_BASE_SECONDS: 10
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      migrate:
+        condition: service_completed_successfully
+
+  migrate:
+    image: migrate/migrate:4
+    container_name: redcolar_migrate
+    restart: "no"
+    working_dir: /migrations
+    volumes:
+      - ./migrations:/migrations:ro
+    entrypoint:
+      [
+        "/bin/sh",
+        "-c",
+        "migrate -path /migrations -database \"postgres://root:password@postgres:5432/my_db?sslmode=disable\" up || (echo \"migrate up failed, forcing version 0\" && migrate -path /migrations -database \"postgres://root:password@postgres:5432/my_db?sslmode=disable\" force 0 && migrate -path /migrations -database \"postgres://root:password@postgres:5432/my_db?sslmode=disable\" up)"
+      ]
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: my_db
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5433:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root -d my_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+volumes:
+  pg_data:
